@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrepreneur Portfolio Generator</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Form Styles */
+        .form-container {
+            background-color: #f5f7fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .color-picker {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .color-option.selected {
+            border-color: #333;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-section h3 {
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        
+        /* Portfolio Styles */
+        #portfolio-output {
+            margin-top: 40px;
+            border: 1px solid #eee;
+            padding: 20px;
+            background: white;
+        }
+        
+        .portfolio-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 60px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .portfolio-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-links a {
+            color: white;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        
+        .social-links a:hover {
+            opacity: 0.8;
+        }
+        
+        .portfolio-section {
+            padding: 60px 0;
+            background: white;
+        }
+        
+        .portfolio-section:nth-child(even) {
+            background: var(--light-color);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+        
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .skill {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .ventures {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .venture {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .portfolio-section:nth-child(even) .venture {
+            background: white;
+        }
+        
+        .venture:hover {
+            transform: translateY(-10px);
+        }
+        
+        .venture-info {
+            padding: 20px;
+        }
+        
+        .venture-name {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        
+        .venture-year {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .achievements, .education, .testimonials {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .achievement-item, .education-item, .testimonial-item {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            margin-top: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .portfolio-footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .contact-email {
+            color: var(--primary-color);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .portfolio-title {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+            
+            .portfolio-section {
+                padding: 40px 0;
+            }
+            
+            .ventures {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                margin-bottom: 5px;
+                flex: 1 0 auto;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .portfolio-title {
+                font-size: 1.8rem;
+            }
+            
+            .profile-image {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-group input, 
+            .form-group textarea, 
+            .form-group select {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Entrepreneur Portfolio Generator</h1>
+        <p>Fill out the form below to create your personalized portfolio website.</p>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('basic-info')">Basic Info</div>
+            <div class="tab" onclick="openTab('professional-info')">Professional</div>
+            <div class="tab" onclick="openTab('appearance')">Appearance</div>
+        </div>
+        
+        <div class="form-container">
+            <form id="portfolio-form">
+                <div id="basic-info" class="tab-content active">
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        <div class="form-group">
+                            <label for="full-name">Full Name</label>
+                            <input type="text" id="full-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="professional-title">Professional Title/Headline</label>
+                            <input type="text" id="professional-title" placeholder="e.g., Tech Entrepreneur, Founder & CEO" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="about-me">About Me</label>
+                            <textarea id="about-me" placeholder="Describe yourself and your entrepreneurial journey (50-100 words)" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-photo">Profile Photo URL</label>
+                            <input type="url" id="profile-photo" placeholder="https://example.com/your-photo.jpg">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Contact Information</h3>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="linkedin">LinkedIn Profile URL</label>
+                            <input type="url" id="linkedin">
+                        </div>
+                        <div class="form-group">
+                            <label for="twitter">Twitter Profile URL</label>
+                            <input type="url" id="twitter">
+                        </div>
+                        <div class="form-group">
+                            <label for="instagram">Instagram Profile URL</label>
+                            <input type="url" id="instagram">
+                        </div>
+                        <div class="form-group">
+                            <label for="other-social">Other Social Media URL</label>
+                            <input type="url" id="other-social">
+                            <label for="other-social-label">Label for this link</label>
+                            <input type="text" id="other-social-label" placeholder="e.g., My Blog">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="professional-info" class="tab-content">
+                    <div class="form-section">
+                        <h3>Skills & Expertise</h3>
+                        <div class="form-group">
+                            <label for="skills">Key Skills (comma separated)</label>
+                            <input type="text" id="skills" placeholder="e.g., Leadership, Startups, Strategy, Innovation" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Business Ventures</h3>
+                        <div id="ventures-container">
+                            <div class="venture-item">
+                                <div class="form-group">
+                                    <label>Company Name</label>
+                                    <input type="text" class="venture-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Year Founded</label>
+                                    <input type="text" class="venture-year" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="venture-desc" required></textarea>
+                                </div>
+                                <button type="button" class="btn remove-venture" style="background-color: #e74c3c;">Remove</button>
+                            </div>
+                        </div>
+                        <button type="button" id="add-venture" class="btn">Add Another Venture</button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Achievements & Awards</h3>
+                        <div id="achievements-container">
+                            <div class="achievement-item">
+                                <div class="form-group">
+                                    <label>Award/Recognition Title</label>
+                                    <input type="text" class="achievement-title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Details</label>
+                                    <textarea class="achievement-desc" required></textarea>
+                                </div>
+                                <button type="button" class="btn remove-achievement" style="background-color: #e74c3c;">Remove</button>
+                            </div>
+                        </div>
+                        <button type="button" id="add-achievement" class="btn">Add Another Achievement</button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Education</h3>
+                        <div id="education-container">
+                            <div class="education-item">
+                                <div class="form-group">
+                                    <label>Degree/Program</label>
+                                    <input type="text" class="education-degree" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Institution</label>
+                                    <input type="text" class="education-institution" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Years Attended</label>
+                                    <input type="text" class="education-years" required>
+                                </div>
+                                <button type="button" class="btn remove-education" style="background-color: #e74c3c;">Remove</button>
+                            </div>
+                        </div>
+                        <button type="button" id="add-education" class="btn">Add Another Education</button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Testimonials</h3>
+                        <div id="testimonials-container">
+                            <div class="testimonial-item">
+                                <div class="form-group">
+                                    <label>Testimonial Text</label>
+                                    <textarea class="testimonial-text" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Author Name</label>
+                                    <input type="text" class="testimonial-author" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Author Title/Company</label>
+                                    <input type="text" class="testimonial-author-title">
+                                </div>
+                                <button type="button" class="btn remove-testimonial" style="background-color: #e74c3c;">Remove</button>
+                            </div>
+                        </div>
+                        <button type="button" id="add-testimonial" class="btn">Add Another Testimonial</button>
+                    </div>
+                </div>
+                
+                <div id="appearance" class="tab-content">
+                    <div class="form-section">
+                        <h3>Color Scheme</h3>
+                        <div class="form-group">
+                            <label>Primary Color</label>
+                            <div class="color-picker">
+                                <div class="color-option selected" style="background-color: #3498db;" onclick="selectColor('primary', '#3498db')"></div>
+                                <div class="color-option" style="background-color: #e74c3c;" onclick="selectColor('primary', '#e74c3c')"></div>
+                                <div class="color-option" style="background-color: #2ecc71;" onclick="selectColor('primary', '#2ecc71')"></div>
+                                <div class="color-option" style="background-color: #9b59b6;" onclick="selectColor('primary', '#9b59b6')"></div>
+                                <div class="color-option" style="background-color: #f39c12;" onclick="selectColor('primary', '#f39c12')"></div>
+                            </div>
+                            <input type="text" id="primary-color" value="#3498db" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Secondary Color</label>
+                            <div class="color-picker">
+                                <div class="color-option selected" style="background-color: #2c3e50;" onclick="selectColor('secondary', '#2c3e50')"></div>
+                                <div class="color-option" style="background-color: #34495e;" onclick="selectColor('secondary', '#34495e')"></div>
+                                <div class="color-option" style="background-color: #16a085;" onclick="selectColor('secondary', '#16a085')"></div>
+                                <div class="color-option" style="background-color: #c0392b;" onclick="selectColor('secondary', '#c0392b')"></div>
+                                <div class="color-option" style="background-color: #7f8c8d;" onclick="selectColor('secondary', '#7f8c8d')"></div>
+                            </div>
+                            <input type="text" id="secondary-color" value="#2c3e50" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Layout Options</h3>
+                        <div class="form-group">
+                            <label for="layout-style">Choose a Layout Style</label>
+                            <select id="layout-style">
+                                <option value="modern">Modern</option>
+                                <option value="minimal">Minimal</option>
+                                <option value="bold">Bold</option>
+                                <option value="elegant">Elegant</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" id="generate-btn" class="btn">Generate Portfolio</button>
+            </form>
+        </div>
+        
+        <div id="portfolio-output" style="display: none;">
+            <h2>Your Portfolio Preview</h2>
+            <div id="generated-portfolio"></div>
+            <button id="download-btn" class="btn" style="margin-top: 20px;">Download HTML File</button>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const tabButtons = document.querySelectorAll('.tab');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Color selection
+        function selectColor(type, color) {
+            // Remove selected class from all options in this picker
+            const parentPicker = event.target.parentElement;
+            const colorOptions = parentPicker.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            event.target.classList.add('selected');
+            document.getElementById(`${type}-color`).value = color;
+        }
+        
+        // Add/remove venture fields
+        document.getElementById('add-venture').addEventListener('click', function() {
+            const container = document.getElementById('ventures-container');
+            const newVenture = document.createElement('div');
+            newVenture.className = 'venture-item';
+            newVenture.innerHTML = `
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" class="venture-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Year Founded</label>
+                    <input type="text" class="venture-year" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="venture-desc" required></textarea>
+                </div>
+                <button type="button" class="btn remove-venture" style="background-color: #e74c3c;">Remove</button>
+            `;
+            container.appendChild(newVenture);
+            
+            newVenture.querySelector('.remove-venture').addEventListener('click', function() {
+                container.removeChild(newVenture);
+            });
+        });
+        
+        // Add/remove achievement fields
+        document.getElementById('add-achievement').addEventListener('click', function() {
+            const container = document.getElementById('achievements-container');
+            const newAchievement = document.createElement('div');
+            newAchievement.className = 'achievement-item';
+            newAchievement.innerHTML = `
+                <div class="form-group">
+                    <label>Award/Recognition Title</label>
+                    <input type="text" class="achievement-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Details</label>
+                    <textarea class="achievement-desc" required></textarea>
+                </div>
+                <button type="button" class="btn remove-achievement" style="background-color: #e74c3c;">Remove</button>
+            `;
+            container.appendChild(newAchievement);
+            
+            newAchievement.querySelector('.remove-achievement').addEventListener('click', function() {
+                container.removeChild(newAchievement);
+            });
+        });
+        
+        // Add/remove education fields
+        document.getElementById('add-education').addEventListener('click', function() {
+            const container = document.getElementById('education-container');
+            const newEducation = document.createElement('div');
+            newEducation.className = 'education-item';
+            newEducation.innerHTML = `
+                <div class="form-group">
+                    <label>Degree/Program</label>
+                    <input type="text" class="education-degree" required>
+                </div>
+                <div class="form-group">
+                    <label>Institution</label>
+                    <input type="text" class="education-institution" required>
+                </div>
+                <div class="form-group">
+                    <label>Years Attended</label>
+                    <input type="text" class="education-years" required>
+                </div>
+                <button type="button" class="btn remove-education" style="background-color: #e74c3c;">Remove</button>
+            `;
+            container.appendChild(newEducation);
+            
+            newEducation.querySelector('.remove-education').addEventListener('click', function() {
+                container.removeChild(newEducation);
+            });
+        });
+        
+        // Add/remove testimonial fields
+        document.getElementById('add-testimonial').addEventListener('click', function() {
+            const container = document.getElementById('testimonials-container');
+            const newTestimonial = document.createElement('div');
+            newTestimonial.className = 'testimonial-item';
+            newTestimonial.innerHTML = `
+                <div class="form-group">
+                    <label>Testimonial Text</label>
+                    <textarea class="testimonial-text" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Author Name</label>
+                    <input type="text" class="testimonial-author" required>
+                </div>
+                <div class="form-group">
+                    <label>Author Title/Company</label>
+                    <input type="text" class="testimonial-author-title">
+                </div>
+                <button type="button" class="btn remove-testimonial" style="background-color: #e74c3c;">Remove</button>
+            `;
+            container.appendChild(newTestimonial);
+            
+            newTestimonial.querySelector('.remove-testimonial').addEventListener('click', function() {
+                container.removeChild(newTestimonial);
+            });
+        });
+        
+        // Generate portfolio
+        document.getElementById('generate-btn').addEventListener('click', function() {
+            // Collect all form data
+            const formData = {
+                // Basic info
+                fullName: document.getElementById('full-name').value,
+                professionalTitle: document.getElementById('professional-title').value,
+                aboutMe: document.getElementById('about-me').value,
+                profilePhoto: document.getElementById('profile-photo').value || 'https://via.placeholder.com/150',
+                email: document.getElementById('email').value,
+                linkedin: document.getElementById('linkedin').value,
+                twitter: document.getElementById('twitter').value,
+                instagram: document.getElementById('instagram').value,
+                otherSocial: document.getElementById('other-social').value,
+                otherSocialLabel: document.getElementById('other-social-label').value,
+                
+                // Professional info
+                skills: document.getElementById('skills').value.split(',').map(skill => skill.trim()),
+                
+                // Ventures
+                ventures: Array.from(document.querySelectorAll('.venture-item')).map(item => ({
+                    name: item.querySelector('.venture-name').value,
+                    year: item.querySelector('.venture-year').value,
+                    description: item.querySelector('.venture-desc').value
+                })),
+                
+                // Achievements
+                achievements: Array.from(document.querySelectorAll('.achievement-item')).map(item => ({
+                    title: item.querySelector('.achievement-title').value,
+                    description: item.querySelector('.achievement-desc').value
+                })),
+                
+                // Education
+                education: Array.from(document.querySelectorAll('.education-item')).map(item => ({
+                    degree: item.querySelector('.education-degree').value,
+                    institution: item.querySelector('.education-institution').value,
+                    years: item.querySelector('.education-years').value
+                })),
+                
+                // Testimonials
+                testimonials: Array.from(document.querySelectorAll('.testimonial-item')).map(item => ({
+                    text: item.querySelector('.testimonial-text').value,
+                    author: item.querySelector('.testimonial-author').value,
+                    authorTitle: item.querySelector('.testimonial-author-title').value
+                })),
+                
+                // Appearance
+                primaryColor: document.getElementById('primary-color').value,
+                secondaryColor: document.getElementById('secondary-color').value,
+                layoutStyle: document.getElementById('layout-style').value
+            };
+            
+            // Generate the portfolio HTML
+            generatePortfolio(formData);
+            
+            // Show the output section
+            document.getElementById('portfolio-output').style.display = 'block';
+            
+            // Scroll to the output
+            document.getElementById('portfolio-output').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Generate the portfolio HTML based on form data
+        function generatePortfolio(data) {
+            const portfolioContainer = document.getElementById('generated-portfolio');
+            
+            // Create social links HTML
+            let socialLinksHTML = '';
+            if (data.linkedin) {
+                socialLinksHTML += `<a href="${data.linkedin}" target="_blank">LinkedIn</a>`;
+            }
+            if (data.twitter) {
+                socialLinksHTML += `<a href="${data.twitter}" target="_blank">Twitter</a>`;
+            }
+            if (data.instagram) {
+                socialLinksHTML += `<a href="${data.instagram}" target="_blank">Instagram</a>`;
+            }
+            if (data.otherSocial) {
+                const label = data.otherSocialLabel || 'Other';
+                socialLinksHTML += `<a href="${data.otherSocial}" target="_blank">${label}</a>`;
+            }
+            
+            // Create ventures HTML
+            let venturesHTML = '';
+            data.ventures.forEach(venture => {
+                venturesHTML += `
+                    <div class="venture">
+                        <div class="venture-info">
+                            <h3 class="venture-name">${venture.name}</h3>
+                            <span class="venture-year">Founded ${venture.year}</span>
+                            <p>${venture.description}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Create achievements HTML
+            let achievementsHTML = '';
+            data.achievements.forEach(achievement => {
+                achievementsHTML += `
+                    <div class="achievement-item">
+                        <h3>${achievement.title}</h3>
+                        <p>${achievement.description}</p>
+                    </div>
+                `;
+            });
+            
+            // Create education HTML
+            let educationHTML = '';
+            data.education.forEach(edu => {
+                educationHTML += `
+                    <div class="education-item">
+                        <h3>${edu.degree}</h3>
+                        <p>${edu.institution}, ${edu.years}</p>
+                    </div>
+                `;
+            });
+            
+            // Create testimonials HTML
+            let testimonialsHTML = '';
+            data.testimonials.forEach(testimonial => {
+                testimonialsHTML += `
+                    <div class="testimonial-item">
+                        <p>"${testimonial.text}"</p>
+                        <p class="testimonial-author">— ${testimonial.author}${testimonial.authorTitle ? `, ${testimonial.authorTitle}` : ''}</p>
+                    </div>
+                `;
+            });
+            
+            // Create skills HTML
+            let skillsHTML = '';
+            data.skills.forEach(skill => {
+                skillsHTML += `<span class="skill">${skill}</span>`;
+            });
+            
+            // Current year for footer
+            const currentYear = new Date().getFullYear();
+            
+            // Generate the full portfolio HTML
+            const portfolioHTML = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${data.fullName} | Entrepreneur Portfolio</title>
+                    <style>
+                        :root {
+                            --primary-color: ${data.primaryColor};
+                            --secondary-color: ${data.secondaryColor};
+                            --accent-color: ${data.primaryColor};
+                            --light-color: #ecf0f1;
+                            --dark-color: ${data.secondaryColor};
+                        }
+                        
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        }
+                        
+                        body {
+                            line-height: 1.6;
+                            color: #333;
+                            background-color: #f9f9f9;
+                        }
+                        
+                        .container {
+                            max-width: 1200px;
+                            margin: 0 auto;
+                            padding: 0 20px;
+                        }
+                        
+                        header {
+                            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                            color: white;
+                            padding: 60px 0 80px;
+                            text-align: center;
+                            position: relative;
+                            overflow: hidden;
+                        }
+                        
+                        .header-content {
+                            position: relative;
+                            z-index: 2;
+                        }
+                        
+                        .profile-image {
+                            width: 150px;
+                            height: 150px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                            border: 5px solid white;
+                            margin-bottom: 20px;
+                            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                        }
+                        
+                        h1 {
+                            font-size: 2.5rem;
+                            margin-bottom: 10px;
+                        }
+                        
+                        .tagline {
+                            font-size: 1.2rem;
+                            opacity: 0.9;
+                            margin-bottom: 20px;
+                        }
+                        
+                        .social-links {
+                            margin: 20px 0;
+                        }
+                        
+                        .social-links a {
+                            color: white;
+                            margin: 0 10px;
+                            font-size: 1.2rem;
+                            text-decoration: none;
+                            transition: opacity 0.3s;
+                        }
+                        
+                        .social-links a:hover {
+                            opacity: 0.8;
+                        }
+                        
+                        section {
+                            padding: 60px 0;
+                            background: white;
+                        }
+                        
+                        section:nth-child(even) {
+                            background: var(--light-color);
+                        }
+                        
+                        .section-title {
+                            text-align: center;
+                            margin-bottom: 40px;
+                            color: var(--secondary-color);
+                            position: relative;
+                        }
+                        
+                        .section-title:after {
+                            content: '';
+                            display: block;
+                            width: 80px;
+                            height: 4px;
+                            background: var(--primary-color);
+                            margin: 15px auto;
+                            border-radius: 2px;
+                        }
+                        
+                        .about-content {
+                            max-width: 800px;
+                            margin: 0 auto;
+                            text-align: center;
+                        }
+                        
+                        .skills-container {
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: center;
+                            gap: 15px;
+                            margin-top: 30px;
+                        }
+                        
+                        .skill {
+                            background: var(--primary-color);
+                            color: white;
+                            padding: 8px 15px;
+                            border-radius: 20px;
+                            font-size: 0.9rem;
+                        }
+                        
+                        .ventures {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                            gap: 30px;
+                            margin-top: 40px;
+                        }
+                        
+                        .venture {
+                            background: white;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                            transition: transform 0.3s;
+                        }
+                        
+                        section:nth-child(even) .venture {
+                            background: white;
+                        }
+                        
+                        .venture:hover {
+                            transform: translateY(-10px);
+                        }
+                        
+                        .venture-info {
+                            padding: 20px;
+                        }
+                        
+                        .venture-name {
+                            font-size: 1.2rem;
+                            color: var(--secondary-color);
+                            margin-bottom: 5px;
+                        }
+                        
+                        .venture-year {
+                            color: var(--primary-color);
+                            font-weight: bold;
+                            margin-bottom: 10px;
+                            display: block;
+                        }
+                        
+                        .achievements, .education, .testimonials {
+                            max-width: 800px;
+                            margin: 0 auto;
+                        }
+                        
+                        .achievement-item, .education-item, .testimonial-item {
+                            margin-bottom: 20px;
+                            padding-left: 20px;
+                            border-left: 3px solid var(--primary-color);
+                        }
+                        
+                        .testimonial-author {
+                            font-weight: bold;
+                            margin-top: 10px;
+                            color: var(--secondary-color);
+                        }
+                        
+                        footer {
+                            background: var(--dark-color);
+                            color: white;
+                            text-align: center;
+                            padding: 30px 0;
+                        }
+                        
+                        .contact-email {
+                            color: var(--primary-color);
+                            font-weight: bold;
+                            text-decoration: none;
+                        }
+                        
+                        /* Responsive Styles */
+                        @media (max-width: 768px) {
+                            h1 {
+                                font-size: 2rem;
+                            }
+                            
+                            .tagline {
+                                font-size: 1rem;
+                            }
+                            
+                            section {
+                                padding: 40px 0;
+                            }
+                            
+                            .ventures {
+                                grid-template-columns: 1fr;
+                            }
+                        }
+                        
+                        @media (max-width: 480px) {
+                            h1 {
+                                font-size: 1.8rem;
+                            }
+                            
+                            .profile-image {
+                                width: 120px;
+                                height: 120px;
+                            }
+                            
+                            .section-title {
+                                font-size: 1.5rem;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <header>
+                        <div class="header-content container">
+                            <img src="${data.profilePhoto}" alt="${data.fullName}" class="profile-image" onerror="this.src='https://via.placeholder.com/150'">
+                            <h1>${data.fullName}</h1>
+                            <p class="tagline">${data.professionalTitle}</p>
+                            <div class="social-links">
+                                ${socialLinksHTML}
+                            </div>
+                        </div>
+                    </header>
+                    
+                    <section id="about">
+                        <div class="container">
+                            <h2 class="section-title">About Me</h2>
+                            <div class="about-content">
+                                <p>${data.aboutMe}</p>
+                                
+                                <div class="skills-container">
+                                    ${skillsHTML}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="ventures">
+                        <div class="container">
+                            <h2 class="section-title">Business Ventures</h2>
+                            <div class="ventures">
+                                ${venturesHTML}
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="achievements">
+                        <div class="container">
+                            <h2 class="section-title">Achievements & Awards</h2>
+                            <div class="achievements">
+                                ${achievementsHTML}
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="education">
+                        <div class="container">
+                            <h2 class="section-title">Education</h2>
+                            <div class="education">
+                                ${educationHTML}
+                            </div>
+                        </div>
+                    </section>
+                    
+                    ${data.testimonials.length > 0 ? `
+                    <section id="testimonials">
+                        <div class="container">
+                            <h2 class="section-title">Testimonials</h2>
+                            <div class="testimonials">
+                                ${testimonialsHTML}
+                            </div>
+                        </div>
+                    </section>
+                    ` : ''}
+                    
+                    <footer>
+                        <div class="container">
+                            <h3>Get In Touch</h3>
+                            <p>Interested in collaboration or have questions about my work?</p>
+                            <p>Email me at <a href="mailto:${data.email}" class="contact-email">${data.email}</a></p>
+                            <p>&copy; ${currentYear} ${data.fullName}. All rights reserved.</p>
+                        </div>
+                    </footer>
+                </body>
+                </html>
+            `;
+            
+            portfolioContainer.innerHTML = portfolioHTML;
+            
+            // Set up download button
+            document.getElementById('download-btn').onclick = function() {
+                downloadPortfolio(portfolioHTML, `${data.fullName.replace(/\s+/g, '-').toLowerCase()}-portfolio.html`);
+            };
+        }
+        
+        // Download portfolio as HTML file
+        function downloadPortfolio(content, filename) {
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

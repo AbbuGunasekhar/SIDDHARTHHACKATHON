@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Investor Portfolio Generator</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .form-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* Profile Photo Styles */
+        .profile-photo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-photo-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary);
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .profile-photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-photo-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-photo-upload label {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .profile-photo-upload label:hover {
+            background-color: #2980b9;
+        }
+
+        .profile-photo-upload input[type="file"] {
+            display: none;
+        }
+
+        .profile-photo-filename {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        /* Dynamic Fields */
+        .dynamic-field {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .dynamic-field input, .dynamic-field select {
+            flex: 1;
+        }
+        
+        .remove-btn {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 40px;
+            cursor: pointer;
+        }
+        
+        .add-btn {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        
+        /* Preview Section */
+        #portfolioPreview {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            header {
+                padding: 20px 0;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .dynamic-field {
+                flex-direction: column;
+            }
+            
+            .remove-btn {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Stock Investor Portfolio Generator</h1>
+            <p>Create your professional stock market investor profile</p>
+        </header>
+        
+        <div class="form-section">
+            <h2>Investor Profile</h2>
+            
+            <div class="profile-photo-container">
+                <div class="profile-photo-preview" id="profilePhotoPreview">
+                    <span style="color: #95a5a6;">No photo</span>
+                </div>
+                <div class="profile-photo-upload">
+                    <label for="profilePhoto">Choose Profile Photo</label>
+                    <input type="file" id="profilePhoto" accept="image/*">
+                    <div class="profile-photo-filename" id="profilePhotoFilename"></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Warren Buffett" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="investorType">Investor Type</label>
+                <select id="investorType" required>
+                    <option value="">Select your investor type</option>
+                    <option value="Retail">Retail Investor</option>
+                    <option value="Professional">Professional Investor</option>
+                    <option value="Institutional">Institutional Investor</option>
+                    <option value="Day Trader">Day Trader</option>
+                    <option value="Swing Trader">Swing Trader</option>
+                    <option value="Long-Term">Long-Term Investor</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="investmentFocus">Primary Investment Focus</label>
+                <select id="investmentFocus" required>
+                    <option value="">Select your focus</option>
+                    <option value="Stocks">Stocks</option>
+                    <option value="ETFs">ETFs</option>
+                    <option value="Options">Options</option>
+                    <option value="Futures">Futures</option>
+                    <option value="Forex">Forex</option>
+                    <option value="Crypto">Cryptocurrencies</option>
+                    <option value="Mixed">Mixed Portfolio</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="investmentStrategy">Investment Strategy</label>
+                <textarea id="investmentStrategy" placeholder="Describe your investment approach (e.g., Value investing, Growth investing, Technical analysis, etc.)"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="yearsExperience">Years of Experience</label>
+                <select id="yearsExperience" required>
+                    <option value="0-2">0-2 years</option>
+                    <option value="3-5">3-5 years</option>
+                    <option value="6-10">6-10 years</option>
+                    <option value="10+">10+ years</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2>Portfolio Holdings</h2>
+            
+            <div id="holdingsContainer">
+                <div class="dynamic-field">
+                    <input type="text" class="holding-symbol" placeholder="Symbol (e.g., AAPL)" required>
+                    <input type="text" class="holding-name" placeholder="Company Name">
+                    <select class="holding-type">
+                        <option value="Stock">Stock</option>
+                        <option value="ETF">ETF</option>
+                        <option value="Option">Option</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input type="number" class="holding-shares" placeholder="Shares" step="0.01">
+                    <input type="number" class="holding-avgprice" placeholder="Avg. Price" step="0.01">
+                    <button type="button" class="remove-btn">×</button>
+                </div>
+            </div>
+            <button type="button" id="addHolding" class="add-btn">Add Holding</button>
+        </div>
+        
+        <div class="form-section">
+            <h2>Performance Metrics</h2>
+            
+            <div class="form-group">
+                <label for="portfolioValue">Current Portfolio Value ($)</label>
+                <input type="number" id="portfolioValue" placeholder="100000" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label for="ytdReturn">YTD Return (%)</label>
+                <input type="number" id="ytdReturn" placeholder="15.5" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label for="annualizedReturn">Annualized Return (%)</label>
+                <input type="number" id="annualizedReturn" placeholder="12.3" step="0.01">
+            </div>
+            
+            <div class="form-group">
+                <label for="riskTolerance">Risk Tolerance</label>
+                <select id="riskTolerance">
+                    <option value="Conservative">Conservative</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Aggressive">Aggressive</option>
+                    <option value="Very Aggressive">Very Aggressive</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2>Trading Platforms & Tools</h2>
+            
+            <div id="platformsContainer">
+                <div class="dynamic-field">
+                    <input type="text" class="platform-name" placeholder="Platform (e.g., Interactive Brokers)">
+                    <input type="text" class="platform-type" placeholder="Type (e.g., Brokerage, Charting)">
+                    <button type="button" class="remove-btn">×</button>
+                </div>
+            </div>
+            <button type="button" id="addPlatform" class="add-btn">Add Platform</button>
+        </div>
+        
+        <div class="form-section">
+            <h2>Market Analysis</h2>
+            
+            <div class="form-group">
+                <label for="marketOutlook">Current Market Outlook</label>
+                <textarea id="marketOutlook" placeholder="Your analysis of current market conditions"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="sectorFocus">Sector Focus</label>
+                <input type="text" id="sectorFocus" placeholder="e.g., Technology, Healthcare, Energy">
+            </div>
+            
+            <div class="form-group">
+                <label for="watchlist">Current Watchlist</label>
+                <textarea id="watchlist" placeholder="List stocks you're currently watching"></textarea>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button type="button" id="previewBtn" class="btn-warning">Preview Portfolio</button>
+            <button type="button" id="downloadBtn" class="btn-success">Download Portfolio</button>
+            <button type="button" id="resetBtn" class="btn-danger">Reset Form</button>
+        </div>
+        
+        <div id="portfolioPreview">
+            <h2>Portfolio Preview</h2>
+            <div id="previewContent"></div>
+            <div class="button-group">
+                <button type="button" id="downloadPreviewBtn" class="btn-success">Download Portfolio</button>
+                <button type="button" id="closePreviewBtn" class="btn-danger">Close Preview</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const profilePhotoInput = document.getElementById('profilePhoto');
+            const profilePhotoPreview = document.getElementById('profilePhotoPreview');
+            const profilePhotoFilename = document.getElementById('profilePhotoFilename');
+            
+            // Form elements
+            const fullName = document.getElementById('fullName');
+            const investorType = document.getElementById('investorType');
+            const investmentFocus = document.getElementById('investmentFocus');
+            const investmentStrategy = document.getElementById('investmentStrategy');
+            const yearsExperience = document.getElementById('yearsExperience');
+            const portfolioValue = document.getElementById('portfolioValue');
+            const ytdReturn = document.getElementById('ytdReturn');
+            const annualizedReturn = document.getElementById('annualizedReturn');
+            const riskTolerance = document.getElementById('riskTolerance');
+            const marketOutlook = document.getElementById('marketOutlook');
+            const sectorFocus = document.getElementById('sectorFocus');
+            const watchlist = document.getElementById('watchlist');
+            
+            // Dynamic fields containers
+            const holdingsContainer = document.getElementById('holdingsContainer');
+            const platformsContainer = document.getElementById('platformsContainer');
+            
+            // Buttons
+            const addHoldingBtn = document.getElementById('addHolding');
+            const addPlatformBtn = document.getElementById('addPlatform');
+            const previewBtn = document.getElementById('previewBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const downloadPreviewBtn = document.getElementById('downloadPreviewBtn');
+            const closePreviewBtn = document.getElementById('closePreviewBtn');
+            
+            // Preview elements
+            const portfolioPreview = document.getElementById('portfolioPreview');
+            const previewContent = document.getElementById('previewContent');
+            
+            // Profile photo handling
+            let profilePhotoDataUrl = '';
+            
+            profilePhotoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        profilePhotoDataUrl = event.target.result;
+                        profilePhotoPreview.innerHTML = `<img src="${profilePhotoDataUrl}" alt="Profile Photo">`;
+                        profilePhotoFilename.textContent = file.name;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Add Holding
+            addHoldingBtn.addEventListener('click', function() {
+                const holdingDiv = document.createElement('div');
+                holdingDiv.className = 'dynamic-field';
+                holdingDiv.innerHTML = `
+                    <input type="text" class="holding-symbol" placeholder="Symbol (e.g., AAPL)">
+                    <input type="text" class="holding-name" placeholder="Company Name">
+                    <select class="holding-type">
+                        <option value="Stock">Stock</option>
+                        <option value="ETF">ETF</option>
+                        <option value="Option">Option</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input type="number" class="holding-shares" placeholder="Shares" step="0.01">
+                    <input type="number" class="holding-avgprice" placeholder="Avg. Price" step="0.01">
+                    <button type="button" class="remove-btn">×</button>
+                `;
+                holdingsContainer.appendChild(holdingDiv);
+                addRemoveListener(holdingDiv);
+            });
+            
+            // Add Platform
+            addPlatformBtn.addEventListener('click', function() {
+                const platformDiv = document.createElement('div');
+                platformDiv.className = 'dynamic-field';
+                platformDiv.innerHTML = `
+                    <input type="text" class="platform-name" placeholder="Platform (e.g., Interactive Brokers)">
+                    <input type="text" class="platform-type" placeholder="Type (e.g., Brokerage, Charting)">
+                    <button type="button" class="remove-btn">×</button>
+                `;
+                platformsContainer.appendChild(platformDiv);
+                addRemoveListener(platformDiv);
+            });
+            
+            // Add remove listener to elements
+            function addRemoveListener(element) {
+                const removeBtn = element.querySelector('.remove-btn');
+                removeBtn.addEventListener('click', function() {
+                    element.remove();
+                });
+            }
+            
+            // Initialize remove buttons
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.parentElement.remove();
+                });
+            });
+            
+            // Preview Portfolio
+            previewBtn.addEventListener('click', function() {
+                generatePortfolioHTML(true);
+                portfolioPreview.style.display = 'block';
+                window.scrollTo({
+                    top: portfolioPreview.offsetTop,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Close Preview
+            closePreviewBtn.addEventListener('click', function() {
+                portfolioPreview.style.display = 'none';
+            });
+            
+            // Download Portfolio
+            downloadBtn.addEventListener('click', function() {
+                generatePortfolioHTML(false);
+            });
+            
+            // Download from Preview
+            downloadPreviewBtn.addEventListener('click', function() {
+                generatePortfolioHTML(false);
+            });
+            
+            // Reset Form
+            resetBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to reset all fields?')) {
+                    document.querySelectorAll('input, select, textarea').forEach(el => {
+                        if (el.type !== 'button' && el.type !== 'file') {
+                            el.value = '';
+                        }
+                    });
+                    
+                    holdingsContainer.innerHTML = `
+                        <div class="dynamic-field">
+                            <input type="text" class="holding-symbol" placeholder="Symbol (e.g., AAPL)">
+                            <input type="text" class="holding-name" placeholder="Company Name">
+                            <select class="holding-type">
+                                <option value="Stock">Stock</option>
+                                <option value="ETF">ETF</option>
+                                <option value="Option">Option</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="number" class="holding-shares" placeholder="Shares" step="0.01">
+                            <input type="number" class="holding-avgprice" placeholder="Avg. Price" step="0.01">
+                            <button type="button" class="remove-btn">×</button>
+                        </div>
+                    `;
+                    
+                    platformsContainer.innerHTML = `
+                        <div class="dynamic-field">
+                            <input type="text" class="platform-name" placeholder="Platform (e.g., Interactive Brokers)">
+                            <input type="text" class="platform-type" placeholder="Type (e.g., Brokerage, Charting)">
+                            <button type="button" class="remove-btn">×</button>
+                        </div>
+                    `;
+                    
+                    profilePhotoPreview.innerHTML = '<span style="color: #95a5a6;">No photo</span>';
+                    profilePhotoFilename.textContent = '';
+                    profilePhotoDataUrl = '';
+                }
+            });
+            
+            // Generate Portfolio HTML
+            function generatePortfolioHTML(isPreview) {
+                // Collect all data
+                const portfolioData = {
+                    profilePhoto: profilePhotoDataUrl,
+                    personalInfo: {
+                        name: fullName.value,
+                        investorType: investorType.value,
+                        investmentFocus: investmentFocus.value,
+                        investmentStrategy: investmentStrategy.value,
+                        yearsExperience: yearsExperience.value
+                    },
+                    performance: {
+                        portfolioValue: portfolioValue.value,
+                        ytdReturn: ytdReturn.value,
+                        annualizedReturn: annualizedReturn.value,
+                        riskTolerance: riskTolerance.value
+                    },
+                    marketAnalysis: {
+                        outlook: marketOutlook.value,
+                        sectorFocus: sectorFocus.value,
+                        watchlist: watchlist.value
+                    },
+                    holdings: [],
+                    platforms: []
+                };
+                
+                // Collect holdings
+                document.querySelectorAll('#holdingsContainer .dynamic-field').forEach(holding => {
+                    const symbol = holding.querySelector('.holding-symbol').value;
+                    const name = holding.querySelector('.holding-name').value;
+                    const type = holding.querySelector('.holding-type').value;
+                    const shares = holding.querySelector('.holding-shares').value;
+                    const avgPrice = holding.querySelector('.holding-avgprice').value;
+                    
+                    if (symbol) {
+                        portfolioData.holdings.push({
+                            symbol,
+                            name,
+                            type,
+                            shares,
+                            avgPrice
+                        });
+                    }
+                });
+                
+                // Collect platforms
+                document.querySelectorAll('#platformsContainer .dynamic-field').forEach(platform => {
+                    const name = platform.querySelector('.platform-name').value;
+                    const type = platform.querySelector('.platform-type').value;
+                    
+                    if (name) {
+                        portfolioData.platforms.push({
+                            name,
+                            type
+                        });
+                    }
+                });
+                
+                // Generate HTML
+                const portfolioHTML = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>${portfolioData.personalInfo.name || 'Stock Investor Portfolio'}</title>
+                        <style>
+                            :root {
+                                --primary: #3498db;
+                                --secondary: #2c3e50;
+                                --success: #27ae60;
+                                --danger: #e74c3c;
+                                --warning: #f39c12;
+                                --light: #ecf0f1;
+                                --dark: #2c3e50;
+                            }
+                            
+                            * {
+                                box-sizing: border-box;
+                                margin: 0;
+                                padding: 0;
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            }
+                            
+                            body {
+                                line-height: 1.6;
+                                color: #333;
+                                background-color: #f5f7fa;
+                            }
+                            
+                            .container {
+                                max-width: 1200px;
+                                margin: 0 auto;
+                                padding: 20px;
+                            }
+                            
+                            header {
+                                background-color: var(--secondary);
+                                color: white;
+                                padding: 40px 0;
+                                text-align: center;
+                                margin-bottom: 30px;
+                                border-radius: 8px;
+                            }
+                            
+                            .profile-section {
+                                display: flex;
+                                flex-wrap: wrap;
+                                align-items: center;
+                                gap: 30px;
+                                margin-bottom: 40px;
+                            }
+                            
+                            .profile-photo {
+                                width: 200px;
+                                height: 200px;
+                                border-radius: 50%;
+                                object-fit: cover;
+                                border: 5px solid white;
+                                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                            }
+                            
+                            .profile-info {
+                                flex: 1;
+                                min-width: 300px;
+                            }
+                            
+                            h1 {
+                                font-size: 2.5rem;
+                                margin-bottom: 10px;
+                            }
+                            
+                            .investor-type {
+                                font-size: 1.2rem;
+                                color: var(--primary);
+                                margin-bottom: 15px;
+                            }
+                            
+                            .investment-focus {
+                                font-weight: 600;
+                                margin-bottom: 15px;
+                            }
+                            
+                            .experience {
+                                color: #777;
+                                margin-bottom: 15px;
+                            }
+                            
+                            .strategy {
+                                margin-bottom: 20px;
+                                font-size: 1.1rem;
+                            }
+                            
+                            section {
+                                background-color: white;
+                                border-radius: 8px;
+                                padding: 30px;
+                                margin-bottom: 30px;
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                            }
+                            
+                            h2 {
+                                color: var(--secondary);
+                                margin-bottom: 20px;
+                                font-size: 1.8rem;
+                                border-bottom: 2px solid #eee;
+                                padding-bottom: 10px;
+                            }
+                            
+                            .performance-metrics {
+                                display: grid;
+                                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                                gap: 20px;
+                                margin-bottom: 20px;
+                            }
+                            
+                            .metric {
+                                background-color: var(--light);
+                                padding: 15px;
+                                border-radius: 8px;
+                                text-align: center;
+                            }
+                            
+                            .metric-value {
+                                font-size: 1.5rem;
+                                font-weight: 700;
+                                color: var(--secondary);
+                            }
+                            
+                            .metric-label {
+                                font-size: 0.9rem;
+                                color: #777;
+                            }
+                            
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-bottom: 20px;
+                            }
+                            
+                            th {
+                                background-color: var(--light);
+                                padding: 12px;
+                                text-align: left;
+                                font-weight: 600;
+                            }
+                            
+                            td {
+                                padding: 12px;
+                                border-bottom: 1px solid #eee;
+                            }
+                            
+                            .positive {
+                                color: var(--success);
+                            }
+                            
+                            .negative {
+                                color: var(--danger);
+                            }
+                            
+                            .platforms {
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 10px;
+                            }
+                            
+                            .platform {
+                                background-color: var(--light);
+                                padding: 8px 15px;
+                                border-radius: 20px;
+                                font-size: 0.9rem;
+                            }
+                            
+                            .market-outlook, .watchlist {
+                                margin-bottom: 20px;
+                            }
+                            
+                            footer {
+                                text-align: center;
+                                padding: 20px;
+                                color: #777;
+                                font-size: 0.9rem;
+                            }
+                            
+                            /* Responsive Styles */
+                            @media (max-width: 768px) {
+                                .container {
+                                    padding: 15px;
+                                }
+                                
+                                header {
+                                    padding: 30px 0;
+                                }
+                                
+                                .profile-section {
+                                    flex-direction: column;
+                                    text-align: center;
+                                }
+                                
+                                section {
+                                    padding: 20px;
+                                }
+                                
+                                .performance-metrics {
+                                    grid-template-columns: 1fr 1fr;
+                                }
+                                
+                                table {
+                                    display: block;
+                                    overflow-x: auto;
+                                }
+                            }
+                            
+                            @media (max-width: 480px) {
+                                .performance-metrics {
+                                    grid-template-columns: 1fr;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <header>
+                                <h1>${portfolioData.personalInfo.name || 'Stock Investor Portfolio'}</h1>
+                                <p class="investor-type">${portfolioData.personalInfo.investorType || 'Investor'}</p>
+                            </header>
+                            
+                            <section class="profile-section">
+                                ${portfolioData.profilePhoto ? `<img src="${portfolioData.profilePhoto}" class="profile-photo" alt="${portfolioData.personalInfo.name}">` : ''}
+                                <div class="profile-info">
+                                    <p class="investment-focus">Primary Focus: ${portfolioData.personalInfo.investmentFocus || 'Not specified'}</p>
+                                    <p class="experience">Experience: ${portfolioData.personalInfo.yearsExperience || 'Not specified'} years</p>
+                                    <div class="strategy">
+                                        <h3>Investment Strategy</h3>
+                                        <p>${portfolioData.personalInfo.investmentStrategy || 'Not specified'}</p>
+                                    </div>
+                                </div>
+                            </section>
+                            
+                            <section id="performance">
+                                <h2>Performance Metrics</h2>
+                                <div class="performance-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">$${portfolioData.performance.portfolioValue || 'N/A'}</div>
+                                        <div class="metric-label">Portfolio Value</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value ${portfolioData.performance.ytdReturn >= 0 ? 'positive' : 'negative'}">${portfolioData.performance.ytdReturn || '0'}%</div>
+                                        <div class="metric-label">YTD Return</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value ${portfolioData.performance.annualizedReturn >= 0 ? 'positive' : 'negative'}">${portfolioData.performance.annualizedReturn || '0'}%</div>
+                                        <div class="metric-label">Annualized Return</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value">${portfolioData.performance.riskTolerance || 'Not specified'}</div>
+                                        <div class="metric-label">Risk Tolerance</div>
+                                    </div>
+                                </div>
+                            </section>
+                            
+                            ${portfolioData.holdings.length > 0 ? `
+                            <section id="holdings">
+                                <h2>Portfolio Holdings</h2>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Symbol</th>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Shares</th>
+                                            <th>Avg. Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${portfolioData.holdings.map(holding => `
+                                            <tr>
+                                                <td>${holding.symbol}</td>
+                                                <td>${holding.name || '—'}</td>
+                                                <td>${holding.type}</td>
+                                                <td>${holding.shares || '—'}</td>
+                                                <td>$${holding.avgPrice || '—'}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </section>
+                            ` : ''}
+                            
+                            ${portfolioData.platforms.length > 0 ? `
+                            <section id="platforms">
+                                <h2>Trading Platforms & Tools</h2>
+                                <div class="platforms">
+                                    ${portfolioData.platforms.map(platform => `
+                                        <div class="platform">
+                                            ${platform.name}${platform.type ? ` (${platform.type})` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </section>
+                            ` : ''}
+                            
+                            <section id="market-analysis">
+                                <h2>Market Analysis</h2>
+                                ${portfolioData.marketAnalysis.outlook ? `
+                                <div class="market-outlook">
+                                    <h3>Current Market Outlook</h3>
+                                    <p>${portfolioData.marketAnalysis.outlook.replace(/\n/g, '<br>')}</p>
+                                </div>
+                                ` : ''}
+                                
+                                ${portfolioData.marketAnalysis.sectorFocus ? `
+                                <div>
+                                    <h3>Sector Focus</h3>
+                                    <p>${portfolioData.marketAnalysis.sectorFocus}</p>
+                                </div>
+                                ` : ''}
+                                
+                                ${portfolioData.marketAnalysis.watchlist ? `
+                                <div class="watchlist">
+                                    <h3>Current Watchlist</h3>
+                                    <p>${portfolioData.marketAnalysis.watchlist.replace(/\n/g, '<br>')}</p>
+                                </div>
+                                ` : ''}
+                            </section>
+                            
+                            <footer>
+                                <p>Portfolio generated on ${new Date().toLocaleDateString()}</p>
+                            </footer>
+                        </div>
+                    </body>
+                    </html>
+                `;
+                
+                if (isPreview) {
+                    // Create iframe and write content properly
+                    const iframe = document.createElement('iframe');
+                    iframe.style.width = '100%';
+                    iframe.style.height = '600px';
+                    iframe.style.border = 'none';
+                    previewContent.innerHTML = '';
+                    previewContent.appendChild(iframe);
+                    
+                    // Write the content to the iframe
+                    iframe.contentDocument.open();
+                    iframe.contentDocument.write(portfolioHTML);
+                    iframe.contentDocument.close();
+                } else {
+                    // Create download link
+                    const blob = new Blob([portfolioHTML], { type: 'text/html' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${portfolioData.personalInfo.name ? portfolioData.personalInfo.name.replace(/\s+/g, '_') : 'stock_investor_portfolio'}.html`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
